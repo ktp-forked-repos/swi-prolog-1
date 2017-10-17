@@ -18,9 +18,12 @@ times(A,s(B),X) :- times(A,B,X1),
 
 isbigger(A,B):- add(B,X,A), X\=0.
 
-
+% Wenn B+Y = A ist und Y(Y ist die Distanz von B zu A) größer als X ist,
+% ist A weiter von B entfernt als X
 dist(A,X,B) :- add(B,Y,A), isbigger(Y,X).
 
 
-%  dist(s(s(s(s(0)))), s(s(0)), s(0)).
-%  dist(s(0),0, s(0)).
+%  dist(s(s(s(s(0)))), s(s(0)), s(0)). true
+%  dist(s(0),0, s(0)). false
+% dist(s(s(s(0))), s(0),s(0)). true
+% dist(s(s(s(0))), s(s(0)),s(0)). false
