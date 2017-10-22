@@ -1,52 +1,14 @@
-% Logik und Logische Programmierung
-
-% Logic task 1 - Solution 1
-%--------------------------
-
+% -*- Mode: Prolog -*-
+['prolog01.pl'].
+['prolog02.pl'].
+['prolog03.pl'].
 % -------------------------------------
 %               Task 1
 % -------------------------------------
 
-father(terach,abraham).  % Faktum (fact)
-father(terach,nachor).
-father(terach,haran).
-%father(terach,fem).
-father(abraham,isaac).
-father(haran,lot).
-father(haran,milcah).
-father(haran,yiscah).
 
-% mother(Mutter,Kind)
-mother(sarah,isaac).
-%mother(fem, femchild).
-%mother(femchild, femchildchild).
-male(terach).
-male(abraham).
-male(nachor).
-male(haran).
-male(isaac).
-male(lot).
-
-female(sarah).
-female(milcah).
-female(yiscah).
-
-%neue Fakten
-%female(fem).
-%female(femchild).
-%female(femchildchild).
-
-%father(terach,fem).
-
-
-son(Father,Child) :- father(Father,Child), male(Child).
-son(Mother,Child) :- mother(Mother,Child), male(Child).
-daughter(Father,Child) :- father(Father,Child), female(Child).
-daugther(Mother,Child) :- mother(Mother,Child), female(Child).
-
-%new rule, Assignment 1
-%task 1
 grandfather(Grandfather, Grandchild) :- parent(Grandfather, Father), parent(Father, Grandchild).
+
 nephew(Nephew, UncleOrAunt) :- sibling(UncleOrAunt, Sibling) , son(Sibling, Nephew).
 
 cousin(A,B) :- parent(P1,A), parent(P2,B), sibling(P1,P2), P1\=P2.
@@ -57,9 +19,6 @@ sibling(Child1, Child2) :- parent(Parent, Child1), parent(Parent, Child2).
 %grandfather(terach, haran).
 % grandfather(terach, fem2).
 %nephew(isaac, fem).
-
-parent(X,Child) :- father(X,Child).
-parent(X,Child) :- mother(X,Child).
 
 
 
@@ -99,20 +58,6 @@ double(A,B) :- times(s(s(0)),B, A), A\=0, B\=0.
 %               Task 3
 % -------------------------------------
 
-nat(0).                  
-nat(s(X)) :- nat(X).     
-
-add(A,0,A)       :- nat(A).
-add(A,s(B),s(C)) :- add(A,B,C).  % add(A,B+1,C+1) <= add(A,B,C)
-
-add2(A,0,A).
-add2(A,s(B),s(C)) :- add2(A,B,C).  % add(A,B+1,C+1) <= add(A,B,C)
-
-
-times(_A,0,0).
-times(A,s(B),X) :- times(A,B,X1),
-	           add(A,X1,X).
-
 isbigger(A,B):- add(B,X,A), X\=0.
 
 % Wenn B+Y = A ist und Y(Y ist die Distanz von B zu A) größer als X ist,
@@ -132,6 +77,15 @@ dist(A,X,B) :- add(B,Y,A), isbigger(Y,X).
 % -------------------------------------
 
 
+join(petersbach, mur).
+join(mur, drau).
+join(drau, donau).
+
+floats(A, B) :- A==B ; join(A, B); join(A,X), floats(X,B).
+
+%  floats(petersbach, mur).
+%  floats(petersbach, drau).
+%  floats(petersbach, donau).
 
 
 
@@ -141,8 +95,12 @@ dist(A,X,B) :- add(B,Y,A), isbigger(Y,X).
 
 
 
+subst([],_,_,[]).
+subst([P|L], P, R, [R|M]) :- subst(L, P, R, M).
+subst([X|L], P, R, [X|M]) :- X \= P, subst(L, P, R, M).
 
-
+%  subst([a,b,c], b, d, M).
+%  subst([a,b,c,a,b,c], b, d, M).
 
 % -------------------------------------
 %               Task 6
