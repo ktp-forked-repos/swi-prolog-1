@@ -1,55 +1,80 @@
 % Logik und Logische Programmierung
-% VU vom 9.10.2017
-% Bernhard K. Aichernig
 
-% Rekursive Programmierung in reinem Prolog
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logic task 1 - Solution 1
+%--------------------------
 
-% Arithmetische Programme
+% -------------------------------------
+%               Task 1
+% -------------------------------------
+
+father(terach,abraham).  % Faktum (fact)
+father(terach,nachor).
+father(terach,haran).
+%father(terach,fem).
+father(abraham,isaac).
+father(haran,lot).
+father(haran,milcah).
+father(haran,yiscah).
+
+% mother(Mutter,Kind)
+mother(sarah,isaac).
+%mother(fem, femchild).
+%mother(femchild, femchildchild).
+male(terach).
+male(abraham).
+male(nachor).
+male(haran).
+male(isaac).
+male(lot).
+
+female(sarah).
+female(milcah).
+female(yiscah).
+
+%neue Fakten
+%female(fem).
+%female(femchild).
+%female(femchildchild).
+
+%father(terach,fem).
+
+
+son(Father,Child) :- father(Father,Child), male(Child).
+son(Mother,Child) :- mother(Mother,Child), male(Child).
+daughter(Father,Child) :- father(Father,Child), female(Child).
+daugther(Mother,Child) :- mother(Mother,Child), female(Child).
+
+%new rule, Assignment 1
+%task 1
+grandfather(Grandfather, Grandchild) :- parent(Grandfather, Father), parent(Father, Grandchild).
+nephew(Nephew, UncleOrAunt) :- sibling(UncleOrAunt, Sibling) , son(Sibling, Nephew).
+
+cousin(A,B) :- parent(P1,A), parent(P2,B), sibling(P1,P2), P1\=P2.
+
+sibling(Child1, Child2) :- parent(Parent, Child1), parent(Parent, Child2).
+
+% grandfather(terach, lot).
+%grandfather(terach, haran).
+% grandfather(terach, fem2).
+%nephew(isaac, fem).
+
+parent(X,Child) :- father(X,Child).
+parent(X,Child) :- mother(X,Child).
+
+
+
+% -------------------------------------
+%               Task 2
+% -------------------------------------
+
+%Definitionen von nat, add, times sind aus den Unterlagen der VO übernommen.
 
 nat(0).                  % Fakt  (fact)
 nat(s(X)) :- nat(X).     % Regel (rules): Kopf :- Rumpf  ( <- )
                          % Horn-Clausen (Horn-Clauses): Aussagen in dieser Form
 	                 % s(X) ist ein Term, s ein Funktor
 
-	
-% Anfragen (Queries)
-%%%%%%%%%%%%%%%%%%%%
 
-% [prolog02]. laedt ein Prolog-Programm
-
-% nat(0).    Anfragen von Fakten:
-%            Operationelle Semantik: Suche im Programm einen Fakt, der die
-%            Anfrage impliziert. Identischer Fakt? -> Yes, sonst No.
-
-
-% nat(s(s(s(0)))). Ist diese Grundanfrage eine logische Folgerung des
-%	           Programmes P?
-
-	
-% Algorithmus: Initialisiere die Resolvente mit Grundanfrage G ;
-%              solange die Resolvente A1, ..., An nicht leer ist
-%              begin
-%                waehle ein Ziel Ai, 1 <= i <= n und
-%	           eine solche Grundinstanz einer Clause
-%                  A :- B1,...Bk aus P, dasz A=Ai gilt
-%	           (gibt es keine solche Clause beende die Schleife);
-%                  bestimme die neue Resolvente
-%                  A1,....,A(i-1), B1,...Bk, A(i+1),...,An 	
-%              end
-%              Ist die Resolvente leer, antworte true, ansonsten false.
-	
-
-% nat(X). Existenzanfrage: Sucht eine Loesung (Substitution) fuer P(X)
-%         Mit ; bekommt man weitere Loesungen und somit
-%         die deklarative Bedeutung des Programmes nat.
-
-% nat(x). Variablen werden immer grosz geschrieben!!!
-
-% trace.   schaltet den Trace-modus ein.
-% notrace. schaltet ihn ab.
-
-% add(Op1,Op2,Res)	
 add(A,0,A)       :- nat(A).
 add(A,s(B),s(C)) :- add(A,B,C).  % add(A,B+1,C+1) <= add(A,B,C)
 
@@ -57,62 +82,77 @@ add2(A,0,A).
 add2(A,s(B),s(C)) :- add2(A,B,C).  % add(A,B+1,C+1) <= add(A,B,C)
 
 
-% Anfragen:
+times(_A,0,0).
+times(A,s(B),X) :- times(A,B,X1),
+	           add(A,X1,X).
+double(A,B) :- times(s(s(0)),B, A), A\=0, B\=0.
+%Testcases:
 
-% add(s(s(0)),s(s(0)),s(s(s(s(0))))).
+%double(s(s(0)),s(0)). true
+%double(0,0). false, per definition kann keine zahl doppelt so gross wie Null sein
+%double(s(s(s(s(0)))),s(s(0))). true
+%double(s(s(s(0))),s(s(0))). soll falsch sein
 
-% add(s(s(0)),s(s(s(0))),X).
 
-% add(X,s(s(s(0))),s(s(s(s(0))))).
 
-% add(X,Y,s(s(s(s(0))))).
+% -------------------------------------
+%               Task 3
+% -------------------------------------
 
-% add(X,Y,Z).
+nat(0).                  
+nat(s(X)) :- nat(X).     
 
-times(A,0,0).
+add(A,0,A)       :- nat(A).
+add(A,s(B),s(C)) :- add(A,B,C).  % add(A,B+1,C+1) <= add(A,B,C)
+
+add2(A,0,A).
+add2(A,s(B),s(C)) :- add2(A,B,C).  % add(A,B+1,C+1) <= add(A,B,C)
+
+
+times(_A,0,0).
 times(A,s(B),X) :- times(A,B,X1),
 	           add(A,X1,X).
 
+isbigger(A,B):- add(B,X,A), X\=0.
 
-% Anfragen:
+% Wenn B+Y = A ist und Y(Y ist die Distanz von B zu A) größer als X ist,
+% ist A weiter von B entfernt als X
+dist(A,X,B) :- add(B,Y,A), isbigger(Y,X).
 
-% times(s(s(0)),s(s(0)),s(s(s(s(0))))).
 
-% times(s(s(0)),s(s(s(0))),X).
+%  dist(s(s(s(s(0)))), s(s(0)), s(0)). true
+%  dist(s(0),0, s(0)). false
+% dist(s(s(s(0))), s(0),s(0)). true
+% dist(s(s(s(0))), s(s(0)),s(0)). false
 
-% times(X,s(s(s(0))),s(s(s(s(s(s(0))))))).
 
-% times(X,Y,s(s(s(s(0))))).
 
-% times(X,Y,Z).
+% -------------------------------------
+%               Task 4
+% -------------------------------------
 
-fact(0,s(0)).
-%fact(s(0),s(0)).
-fact(s(N),F) :- fact(N,F1),
-	        times(s(N),F1,F).
 
-% fact(s(s(s(0))),s(s(s(s(s(s(0))))))).
 
-% fact(s(s(s(0))),X).
 
-% fact(X,s(s(s(s(s(s(0))))))).
 
-% fact(X,Y).
+% -------------------------------------
+%               Task 5
+% -------------------------------------
 
-% fact(s(s(s(s(s(s(s(s(0)))))))),X). fact(8) = 5,040 ergibt stack overflow
 
-% Mit vordefinierter Arithmetik:
 
-fact2(0,1).
-fact2(N,F) :- N1 is N-1,
-	      fact2(N1,R),
-	      F is N*R.
 
-% fact2(3,X).
 
-% fact2(20,X).   % Arithmetik Operatoren sind effizienter.
 
-% fact2(X,6).    % aber nicht umkehrbar!
+% -------------------------------------
+%               Task 6
+% -------------------------------------
 
-% Programmierung mit Listen
-%--------------------------
+% So we have here H as a head, T as a tail, P is the product and R is rest
+
+prod([],0).
+prod([H],H).   %explicit clause for the empty list to avoid recursive clause
+prod([H|T], P) :- prod(T,R), P is H*R.
+
+% prod([1,2,3,4,5], P).
+
